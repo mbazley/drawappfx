@@ -1,7 +1,7 @@
 #include "graphics.h"
 
 int main(void) {
-  char *filename = "/home/Martin/ucl/coursewk/comp2013/drawappfx/examples/avatar.jpeg";
+  char *filename = "examples/avatar.jpeg";
   imageSize(400, 400);
   imagePattern(filename, -25, 0, 75, 50);
   fillRect(25, 25, 350, 350);
