@@ -1,0 +1,63 @@
+DrawAppFX
+---------
+Martin Bazley 13/11/2012
+
+Manifest:
+
+DrawAppFX/: The NetBeans project
+examples/: graphics.c, graphics.h and a selection of examples (not all of which are Graham's originals)
+drawapp.jar: The original Draw App, for comparison purposes (making sure all the APIs do the same thing)
+Makefile: A testing shortcut
+
+Use of the Makefile:
+
+To use DrawAppFX, type "make filename", where filename is the name of a .c file in the examples directory, e.g. "make house".  This will compile, link and run the file, and pipe its output to DrawAppFX.
+
+You can also type "make old-filename" to use the original Draw App, e.g. "make old-house".
+
+The main additions to the examples are "javafx" and "turtle".
+
+New APIs in the DSL:
+
+S+: Turn single-step mode on.
+S-: Turn single-step mode off (default).
+IS <width> <height>: Change the size of the drawing canvas.
+DI <x> <y> <width> <height> @filename: Plot an image stored locally.  (Relative to CLASSPATH or some other such arbitrary location I determined mainly by trial and error and can't be bothered to go into greater detail about.)
+LG <string>: Change the colour to a linear gradient.  (This overrides SC.)  <string> is passed to LinearGradient.valueOf() - see JavaFX documentation for its format.
+RG <string>: As above, for RadialGradient.
+IP <x> <y> <width> <height> @filename: Change the colour to an image pattern.  Coordinates are absolute, not proportional.  Otherwise similar to DI.
+DQ <x1> <y1> <cx1> <cy1> <x2> <y2>: Draw a QuadCurve.
+DC <x1> <y1> <cx1> <cy1> <cx2> <cy2> <x2> <y2>: Draw a CubicCurve.
+T+: Put the turtle's pen down.  Future TF commands will draw a line.  Note that this command will not, in itself, draw anything (so not very realistic).
+T-: Retract the turtle's pen (hurr hurr).  Future TF commands will change the turtle's coordinates but not draw anything.
+TF <n>: Move the turtle forward n units.  The turtle starts in the top-left corner of the canvas facing directly downwards with the pen up.
+TR <n>: Turn the turtle right by n degrees.
+TL <n>: Turn the turtle left by n degrees.
+
+Notes about the front-end and an incomplete list of bodges made:
+
+I couldn't think of any sensible way to configure single-stepping from the front-end, so you have to insert commands into the DSL to do it instead.  The 'Next line' button is only active when single-stepping is enabled and the last line in the input has not been reached.
+
+The 'Save picture' button can be used to take a snapshot of the drawing.  This works in all circumstances, including when execution has been terminated due to an error.  A save dialogue will pop up to allow you to determine the file's location.  The format is fixed at PNG.
+
+In single-step mode the line in the input which has just been executed will be displayed.
+
+In the event of incorrect input, an error message in red will inform you of the problem, and the offending line displayed (even if you weren't in single-step mode).  Execution then terminates (there is no way to 'recover' from errors).
+
+If you manage to give the snapshot function an invalid filename (such as one in a directory where you do not have write permission), a large amount of stack dump will be spewed to the terminal and the application probably won't show a sensible error message, although it won't crash.  This is because JavaFX is a fetid mound of donkey shit.
+
+The drawString method scales the Text objects it produces by 85%, for no better reason than that that looked about right.  ("q1.10.c", which you may remember, is a handy stress-test.)
+
+There are no comments, because I only ever bother writing them when I'm getting marked for it.
+
+The window layout is hideously ugly, but see if I care.
+
+There is no Git revision history, because I didn't commit anything until I had already finished as there was no point in doing so.  Frankly, you should be grateful that I put in the significant effort involved in pushing the sources to GitHub, given that a prerequisite (due to Linux distribution crapness) was spending an hour wrestling with the massive broken nightmare that is Git's own build process.
+
+Not all of the colour definitions are the same in JavaFX as the same-named ones in Swing.  I considered spending a couple of hours meticulously devising a test case and synchronising every last one, before deciding that I did not give anything approaching a significant proportion of the requisite fucks.
+
+The Java docs for Math.toRadians() specify that you should not expect its conversion to be reliable or accurate.  Guess that's the turtle's dreams of a future as a high-precision professional CAD instrument - or at least reliable drawer of circles - shot, then.
+
+There is a high percentage of duplication in Parser.java.  This is because Java is a monstrous half-baked abomination - a pathetic excuse for a serious programming language - which is best avoided if at all possible.
+
+If I seem grumpy, it's because I am.
